@@ -5,9 +5,13 @@ bd-tp1 1c 2017
 
 ** https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-16-04
 
-### DER
+### DER 
 
 ** https://drive.google.com/file/d/0BzkIgbt1E5IqbTVYSzBnVTVXYjQ/view?usp=sharing
+
+### Restricciones
+
+** https://docs.google.com/document/d/1mxNmnHbKvaNbIm4-fF0P2KTh5x7LIK_cTWKnDsJcBQo/edit?usp=sharing
 
 ### Generar dump de la base
 
