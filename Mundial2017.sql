@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.17, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.18, for Linux (x86_64)
 --
 -- Host: localhost    Database: Mundial2017
 -- ------------------------------------------------------
--- Server version	5.7.17-0ubuntu0.16.04.2
+-- Server version	5.7.18-0ubuntu0.16.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -198,13 +198,9 @@ DROP TABLE IF EXISTS `Coach`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Coach` (
-  `itf` smallint(5) unsigned NOT NULL,
-  `nombre` varchar(64) NOT NULL,
-  `apellido` varchar(64) NOT NULL,
-  `id_escuela` smallint(5) unsigned NOT NULL,
-  PRIMARY KEY (`itf`),
-  KEY `fk_coach_escuela` (`id_escuela`),
-  CONSTRAINT `fk_coach_escuela` FOREIGN KEY (`id_escuela`) REFERENCES `Escuela` (`id_escuela`)
+  `id_itf` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id_itf`),
+  CONSTRAINT `fk_coach_participante` FOREIGN KEY (`id_itf`) REFERENCES `Participante` (`id_itf`) ON DELETE NO ACTION ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -225,17 +221,13 @@ DROP TABLE IF EXISTS `Competidor`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Competidor` (
+  `id_itf` int(10) unsigned NOT NULL,
   `dni` smallint(5) unsigned NOT NULL,
-  `nombre` varchar(64) NOT NULL,
-  `apellido` varchar(64) NOT NULL,
   `genero` char(1) NOT NULL,
   `fecha_nacimiento` date NOT NULL,
   `peso` tinyint(3) unsigned NOT NULL,
-  `graduacion` tinyint(3) unsigned NOT NULL,
-  `id_escuela` smallint(5) unsigned NOT NULL,
-  PRIMARY KEY (`dni`),
-  KEY `fk_competidor_escuela` (`id_escuela`),
-  CONSTRAINT `fk_competidor_escuela` FOREIGN KEY (`id_escuela`) REFERENCES `Escuela` (`id_escuela`)
+  PRIMARY KEY (`id_itf`),
+  CONSTRAINT `fk_competidor_participante` FOREIGN KEY (`id_itf`) REFERENCES `Participante` (`id_itf`) ON DELETE NO ACTION ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -280,11 +272,11 @@ DROP TABLE IF EXISTS `EquipoCompetidores`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `EquipoCompetidores` (
   `id_equipo` smallint(5) unsigned NOT NULL,
-  `dni_competidor` smallint(5) unsigned NOT NULL,
-  PRIMARY KEY (`id_equipo`,`dni_competidor`),
-  KEY `fk_equipoCompetidor_competidor` (`dni_competidor`),
-  CONSTRAINT `fk_equipoCompetidor_competidor` FOREIGN KEY (`dni_competidor`) REFERENCES `Competidor` (`dni`),
-  CONSTRAINT `fk_equipoCompetidor_equipo` FOREIGN KEY (`id_equipo`) REFERENCES `Equipo` (`id_equipo`)
+  `id_competidor` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id_equipo`,`id_competidor`),
+  KEY `fk_equipoCompetidores_competidor_idx` (`id_competidor`),
+  CONSTRAINT `fk_equipoCompetidor_equipo` FOREIGN KEY (`id_equipo`) REFERENCES `Equipo` (`id_equipo`),
+  CONSTRAINT `fk_equipoCompetidores_competidor` FOREIGN KEY (`id_competidor`) REFERENCES `Competidor` (`id_itf`) ON DELETE NO ACTION ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -380,12 +372,12 @@ DROP TABLE IF EXISTS `InscripcionesIndividuales`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `InscripcionesIndividuales` (
-  `dni_competidor` smallint(5) unsigned NOT NULL,
+  `id_competidor` int(10) unsigned NOT NULL,
   `id_categoria` smallint(5) unsigned NOT NULL,
-  PRIMARY KEY (`dni_competidor`,`id_categoria`),
+  PRIMARY KEY (`id_competidor`,`id_categoria`),
   KEY `fk_inscripcionIndividual_categoria` (`id_categoria`),
   CONSTRAINT `fk_inscripcionIndividual_categoria` FOREIGN KEY (`id_categoria`) REFERENCES `CategoriaIndividual` (`id_categoria`),
-  CONSTRAINT `fk_inscripcionIndividual_competidor` FOREIGN KEY (`dni_competidor`) REFERENCES `Competidor` (`dni`)
+  CONSTRAINT `fk_inscripcionesIndividuales_competidor` FOREIGN KEY (`id_competidor`) REFERENCES `Competidor` (`id_itf`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -460,13 +452,13 @@ DROP TABLE IF EXISTS `MedallasIndividuales`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `MedallasIndividuales` (
-  `dni_competidor` smallint(5) unsigned NOT NULL,
+  `id_competidor` int(10) unsigned NOT NULL,
   `id_categoria` smallint(5) unsigned NOT NULL,
   `puesto` tinyint(3) unsigned NOT NULL,
-  PRIMARY KEY (`dni_competidor`,`id_categoria`),
   KEY `fk_medallaIndividual_categoria` (`id_categoria`),
+  KEY `fk_MedallasIndividuales_1_idx` (`id_competidor`),
   CONSTRAINT `fk_medallaIndividual_categoria` FOREIGN KEY (`id_categoria`) REFERENCES `CategoriaIndividual` (`id_categoria`),
-  CONSTRAINT `fk_medallaIndividual_competidor` FOREIGN KEY (`dni_competidor`) REFERENCES `Competidor` (`dni`)
+  CONSTRAINT `fk_medallasIndividuales_competidor` FOREIGN KEY (`id_competidor`) REFERENCES `Competidor` (`id_itf`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -522,6 +514,36 @@ CREATE TABLE `Pais` (
 LOCK TABLES `Pais` WRITE;
 /*!40000 ALTER TABLE `Pais` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Pais` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Participante`
+--
+
+DROP TABLE IF EXISTS `Participante`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Participante` (
+  `id_itf` int(10) unsigned NOT NULL,
+  `nombre` varchar(45) NOT NULL,
+  `apellido` varchar(45) NOT NULL,
+  `graduacion` varchar(45) NOT NULL,
+  `foto` longblob,
+  `id_escuela` smallint(5) unsigned DEFAULT NULL,
+  `tipo` varchar(1) DEFAULT NULL,
+  PRIMARY KEY (`id_itf`),
+  KEY `id_escuela_idx` (`id_escuela`),
+  CONSTRAINT `fk_participante_escuela` FOREIGN KEY (`id_escuela`) REFERENCES `Escuela` (`id_escuela`) ON DELETE NO ACTION ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Participante`
+--
+
+LOCK TABLES `Participante` WRITE;
+/*!40000 ALTER TABLE `Participante` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Participante` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -610,4 +632,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-29 18:32:58
+-- Dump completed on 2017-04-30 20:25:20

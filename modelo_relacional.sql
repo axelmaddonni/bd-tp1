@@ -21,27 +21,40 @@ CREATE TABLE Escuela (id_escuela int2 unsigned NOT NULL auto_increment PRIMARY K
 ALTER TABLE Escuela ADD CONSTRAINT fk_escuela_maestro
 FOREIGN KEY (placa_maestro) REFERENCES Maestro(placa);
 
+--Participante (id_itf, nombre, apellido, graduacion, foto, id_escuela, tipo)
+CREATE TABLE `Participante` (
+  id_itf int(10) unsigned NOT NULL,
+  nombre varchar(45) NOT NULL,
+  apellido varchar(45) NOT NULL,
+  graduacion varchar(45) NOT NULL,
+  foto longblob,
+  id_escuela smallint(5) unsigned DEFAULT NULL,
+  tipo varchar(1) DEFAULT NULL,
+  PRIMARY KEY (id_itf),
+  KEY id_escuela_idx (id_escuela),
+  CONSTRAINT fk_participante_escuela FOREIGN KEY (id_escuela) REFERENCES Escuela (id_escuela) ON DELETE NO ACTION ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
  -- Coach (itf, nombre, apellido, id_escuela)
 
-CREATE TABLE Coach (itf int2 unsigned NOT NULL PRIMARY KEY, nombre varchar(64) NOT NULL, apellido varchar(64) NOT NULL, id_escuela int2 unsigned NOT NULL);
-ALTER TABLE Coach ADD CONSTRAINT fk_coach_escuela
-FOREIGN KEY (id_escuela) REFERENCES Escuela(id_escuela);
+CREATE TABLE Coach (id_itf int(10) unsigned NOT NULL PRIMARY KEY);
+ALTER TABLE Coach ADD CONSTRAINT fk_coach_participante
+FOREIGN KEY (id_itf) REFERENCES Participante(id_itf);
 
- -- Competidor (dni, nombre, apellido, genero, fecha_nacimiento, peso, graduacion, id_escuela)
+ -- Competidor (id_itf, dni, nombre, apellido, genero, fecha_nacimiento, peso, graduacion, id_escuela)
 
-CREATE TABLE Competidor (dni int2 unsigned NOT NULL PRIMARY KEY, nombre varchar(64) NOT NULL, apellido varchar(64) NOT NULL, genero char(1) NOT NULL, fecha_nacimiento date NOT NULL, peso int1 unsigned NOT NULL, graduacion int1 unsigned NOT NULL, id_escuela int2 unsigned NOT NULL);
-
-
-ALTER TABLE Competidor ADD CONSTRAINT fk_competidor_escuela
-FOREIGN KEY (id_escuela) REFERENCES Escuela(id_escuela);
+CREATE TABLE Competidor (id_itf int(10) unsigned NOT NULL PRIMARY KEY, dni int2 unsigned NOT NULL, nombre varchar(64) NOT NULL, apellido varchar(64) NOT NULL, genero char(1) NOT NULL, fecha_nacimiento date NOT NULL, peso int1 unsigned NOT NULL);
+ALTER TABLE Competidor ADD CONSTRAINT fk_competidor_participante
+FOREIGN KEY (id_itf) REFERENCES Participante(id_itf);
 
  -- Equipo (id_equipo, nombre)
 
 CREATE TABLE Equipo (id_equipo int2 unsigned NOT NULL auto_increment PRIMARY KEY, nombre varchar(128) NOT NULL);
 
- -- EquipoCompetidores (id_equipo, dni_competidor)
+ -- EquipoCompetidores (id_equipo, id_competidor)
 
-CREATE TABLE EquipoCompetidores (id_equipo int2 unsigned NOT NULL, dni_competidor int2 unsigned NOT NULL, PRIMARY KEY (id_equipo, dni_competidor));
+CREATE TABLE EquipoCompetidores (id_equipo int2 unsigned NOT NULL, id_competidor int(10) unsigned NOT NULL, PRIMARY KEY (id_equipo, id_competidor));
 
 
 ALTER TABLE EquipoCompetidores ADD CONSTRAINT fk_equipoCompetidor_equipo
@@ -49,7 +62,7 @@ FOREIGN KEY (id_equipo) REFERENCES Equipo(id_equipo);
 
 
 ALTER TABLE EquipoCompetidores ADD CONSTRAINT fk_equipoCompetidor_competidor
-FOREIGN KEY (dni_competidor) REFERENCES Competidor(dni);
+FOREIGN KEY (id_competidor) REFERENCES Competidor(id_itf);
 
  -- Modalidad (id_modalidad)
 
@@ -104,25 +117,25 @@ CREATE TABLE CategoriaSaltoIndividual (id_categoria int2 unsigned NOT NULL PRIMA
 ALTER TABLE CategoriaSaltoIndividual ADD CONSTRAINT fk_categoriaSaltoIndividual_categoria
 FOREIGN KEY (id_categoria) REFERENCES CategoriaIndividual(id_categoria);
 
- -- InscripcionesIndividuales (dni_competidor, id_categoria)
+ -- InscripcionesIndividuales (id_competidor, id_categoria)
 
-CREATE TABLE InscripcionesIndividuales (dni_competidor int2 unsigned NOT NULL, id_categoria int2 unsigned NOT NULL, PRIMARY KEY (dni_competidor, id_categoria));
+CREATE TABLE InscripcionesIndividuales (id_competidor int(10) unsigned NOT NULL, id_categoria int2 unsigned NOT NULL, PRIMARY KEY (id_competidor, id_categoria));
 
 
 ALTER TABLE InscripcionesIndividuales ADD CONSTRAINT fk_inscripcionIndividual_competidor
-FOREIGN KEY (dni_competidor) REFERENCES Competidor(dni);
+FOREIGN KEY (id_competidor) REFERENCES Competidor(id_itf);
 
 
 ALTER TABLE InscripcionesIndividuales ADD CONSTRAINT fk_inscripcionIndividual_categoria
 FOREIGN KEY (id_categoria) REFERENCES CategoriaIndividual(id_categoria);
 
- -- MedallasIndividuales (dni_competidor, id_categoria, puesto)
+ -- MedallasIndividuales (id_competidor, id_categoria, puesto)
 
-CREATE TABLE MedallasIndividuales (dni_competidor int2 unsigned NOT NULL, id_categoria int2 unsigned NOT NULL, puesto int1 unsigned NOT NULL, PRIMARY KEY (dni_competidor, id_categoria));
+CREATE TABLE MedallasIndividuales (id_competidor int(10) unsigned NOT NULL, id_categoria int2 unsigned NOT NULL, puesto int1 unsigned NOT NULL, PRIMARY KEY (id_competidor, id_categoria));
 
 
 ALTER TABLE MedallasIndividuales ADD CONSTRAINT fk_medallaIndividual_competidor
-FOREIGN KEY (dni_competidor) REFERENCES Competidor(dni);
+FOREIGN KEY (id_competidor) REFERENCES Competidor(id_itf);
 
 
 ALTER TABLE MedallasIndividuales ADD CONSTRAINT fk_medallaIndividual_categoria
