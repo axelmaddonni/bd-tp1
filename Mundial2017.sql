@@ -200,7 +200,7 @@ DROP TABLE IF EXISTS `Coach`;
 CREATE TABLE `Coach` (
   `id_itf` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id_itf`),
-  CONSTRAINT `fk_coach_participante` FOREIGN KEY (`id_itf`) REFERENCES `Participante` (`id_itf`) ON DELETE NO ACTION ON UPDATE CASCADE
+  CONSTRAINT `fk_coach_participante` FOREIGN KEY (`id_itf`) REFERENCES `Participante` (`id_itf`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -227,7 +227,7 @@ CREATE TABLE `Competidor` (
   `fecha_nacimiento` date NOT NULL,
   `peso` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY (`id_itf`),
-  CONSTRAINT `fk_competidor_participante` FOREIGN KEY (`id_itf`) REFERENCES `Participante` (`id_itf`) ON DELETE NO ACTION ON UPDATE CASCADE
+  CONSTRAINT `fk_competidor_participante` FOREIGN KEY (`id_itf`) REFERENCES `Participante` (`id_itf`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -239,6 +239,32 @@ LOCK TABLES `Competidor` WRITE;
 /*!40000 ALTER TABLE `Competidor` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Competidor` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER chequeo_coach_cada_5_competidores
+     BEFORE INSERT ON Competidor FOR EACH ROW
+     BEGIN
+          DECLARE id_escuela_nuevo_competidor INT;
+          SELECT id_escuela INTO id_escuela_nuevo_competidor FROM Participante WHERE id_itf = NEW.id_itf;
+          IF ((1 + (SELECT COUNT(c.id_itf) FROM Competidor c join Participante p on c.id_itf = p.id_itf where p.id_escuela = id_escuela_nuevo_competidor)) div 5 > (SELECT COUNT(c.id_itf) FROM Coach c
+               JOIN Participante p on c.id_itf = p.id_itf WHERE p.id_escuela = id_escuela_nuevo_competidor))
+          THEN
+               SIGNAL SQLSTATE '45000'
+                    SET MESSAGE_TEXT = 'No se puede agregar otro competidor sin agregar otro Coach de la misma escuela';
+          END IF;
+     END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `Equipo`
@@ -264,29 +290,30 @@ LOCK TABLES `Equipo` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `EquipoCompetidores`
+-- Table structure for table `EquipoCompetidor`
 --
 
-DROP TABLE IF EXISTS `EquipoCompetidores`;
+DROP TABLE IF EXISTS `EquipoCompetidor`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `EquipoCompetidores` (
+CREATE TABLE `EquipoCompetidor` (
   `id_equipo` smallint(5) unsigned NOT NULL,
-  `id_competidor` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id_equipo`,`id_competidor`),
-  KEY `fk_equipoCompetidores_competidor_idx` (`id_competidor`),
-  CONSTRAINT `fk_equipoCompetidor_equipo` FOREIGN KEY (`id_equipo`) REFERENCES `Equipo` (`id_equipo`),
-  CONSTRAINT `fk_equipoCompetidores_competidor` FOREIGN KEY (`id_competidor`) REFERENCES `Competidor` (`id_itf`) ON DELETE NO ACTION ON UPDATE CASCADE
+  `id_itf_competidor` int(10) unsigned NOT NULL,
+  `suplente` int(1) DEFAULT '0',
+  PRIMARY KEY (`id_equipo`,`id_itf_competidor`),
+  KEY `fk_equipoCompetidor_competidor` (`id_itf_competidor`),
+  CONSTRAINT `fk_equipoCompetidor_competidor` FOREIGN KEY (`id_itf_competidor`) REFERENCES `Competidor` (`id_itf`),
+  CONSTRAINT `fk_equipoCompetidor_equipo` FOREIGN KEY (`id_equipo`) REFERENCES `Equipo` (`id_equipo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `EquipoCompetidores`
+-- Dumping data for table `EquipoCompetidor`
 --
 
-LOCK TABLES `EquipoCompetidores` WRITE;
-/*!40000 ALTER TABLE `EquipoCompetidores` DISABLE KEYS */;
-/*!40000 ALTER TABLE `EquipoCompetidores` ENABLE KEYS */;
+LOCK TABLES `EquipoCompetidor` WRITE;
+/*!40000 ALTER TABLE `EquipoCompetidor` DISABLE KEYS */;
+/*!40000 ALTER TABLE `EquipoCompetidor` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -300,9 +327,12 @@ CREATE TABLE `Escuela` (
   `id_escuela` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `nombre` varchar(64) NOT NULL,
   `placa_maestro` smallint(5) unsigned NOT NULL,
+  `codigo_pais` char(2) NOT NULL,
   PRIMARY KEY (`id_escuela`),
   KEY `fk_escuela_maestro` (`placa_maestro`),
-  CONSTRAINT `fk_escuela_maestro` FOREIGN KEY (`placa_maestro`) REFERENCES `Maestro` (`placa`)
+  KEY `fk_escuela_pais` (`codigo_pais`),
+  CONSTRAINT `fk_escuela_maestro` FOREIGN KEY (`placa_maestro`) REFERENCES `Maestro` (`placa`),
+  CONSTRAINT `fk_escuela_pais` FOREIGN KEY (`codigo_pais`) REFERENCES `Pais` (`codigo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -339,13 +369,13 @@ LOCK TABLES `FuncionArbitraje` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `InscripcionesEquipos`
+-- Table structure for table `InscripcionEquipo`
 --
 
-DROP TABLE IF EXISTS `InscripcionesEquipos`;
+DROP TABLE IF EXISTS `InscripcionEquipo`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `InscripcionesEquipos` (
+CREATE TABLE `InscripcionEquipo` (
   `id_equipo` smallint(5) unsigned NOT NULL,
   `id_categoria` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id_equipo`,`id_categoria`),
@@ -356,38 +386,38 @@ CREATE TABLE `InscripcionesEquipos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `InscripcionesEquipos`
+-- Dumping data for table `InscripcionEquipo`
 --
 
-LOCK TABLES `InscripcionesEquipos` WRITE;
-/*!40000 ALTER TABLE `InscripcionesEquipos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `InscripcionesEquipos` ENABLE KEYS */;
+LOCK TABLES `InscripcionEquipo` WRITE;
+/*!40000 ALTER TABLE `InscripcionEquipo` DISABLE KEYS */;
+/*!40000 ALTER TABLE `InscripcionEquipo` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `InscripcionesIndividuales`
+-- Table structure for table `InscripcionIndividual`
 --
 
-DROP TABLE IF EXISTS `InscripcionesIndividuales`;
+DROP TABLE IF EXISTS `InscripcionIndividual`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `InscripcionesIndividuales` (
-  `id_competidor` int(10) unsigned NOT NULL,
+CREATE TABLE `InscripcionIndividual` (
+  `id_itf_competidor` int(10) unsigned NOT NULL,
   `id_categoria` smallint(5) unsigned NOT NULL,
-  PRIMARY KEY (`id_competidor`,`id_categoria`),
+  PRIMARY KEY (`id_itf_competidor`,`id_categoria`),
   KEY `fk_inscripcionIndividual_categoria` (`id_categoria`),
   CONSTRAINT `fk_inscripcionIndividual_categoria` FOREIGN KEY (`id_categoria`) REFERENCES `CategoriaIndividual` (`id_categoria`),
-  CONSTRAINT `fk_inscripcionesIndividuales_competidor` FOREIGN KEY (`id_competidor`) REFERENCES `Competidor` (`id_itf`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_inscripcionIndividual_competidor` FOREIGN KEY (`id_itf_competidor`) REFERENCES `Competidor` (`id_itf`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `InscripcionesIndividuales`
+-- Dumping data for table `InscripcionIndividual`
 --
 
-LOCK TABLES `InscripcionesIndividuales` WRITE;
-/*!40000 ALTER TABLE `InscripcionesIndividuales` DISABLE KEYS */;
-/*!40000 ALTER TABLE `InscripcionesIndividuales` ENABLE KEYS */;
+LOCK TABLES `InscripcionIndividual` WRITE;
+/*!40000 ALTER TABLE `InscripcionIndividual` DISABLE KEYS */;
+/*!40000 ALTER TABLE `InscripcionIndividual` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -402,10 +432,7 @@ CREATE TABLE `Maestro` (
   `nombre` varchar(64) NOT NULL,
   `apellido` varchar(64) NOT NULL,
   `graduacion` tinyint(3) unsigned NOT NULL,
-  `codigo_pais` char(2) NOT NULL,
-  PRIMARY KEY (`placa`),
-  KEY `fk_maestro_pais` (`codigo_pais`),
-  CONSTRAINT `fk_maestro_pais` FOREIGN KEY (`codigo_pais`) REFERENCES `Pais` (`codigo`)
+  PRIMARY KEY (`placa`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -419,15 +446,16 @@ LOCK TABLES `Maestro` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `MedallasEquipos`
+-- Table structure for table `MedallaEquipo`
 --
 
-DROP TABLE IF EXISTS `MedallasEquipos`;
+DROP TABLE IF EXISTS `MedallaEquipo`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `MedallasEquipos` (
+CREATE TABLE `MedallaEquipo` (
   `id_equipo` smallint(5) unsigned NOT NULL,
   `id_categoria` smallint(5) unsigned NOT NULL,
+  `puesto` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY (`id_equipo`,`id_categoria`),
   KEY `fk_medallaEquipo_categoria` (`id_categoria`),
   CONSTRAINT `fk_medallaEquipo_categoria` FOREIGN KEY (`id_categoria`) REFERENCES `CategoriaPorEquipos` (`id_categoria`),
@@ -436,39 +464,39 @@ CREATE TABLE `MedallasEquipos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `MedallasEquipos`
+-- Dumping data for table `MedallaEquipo`
 --
 
-LOCK TABLES `MedallasEquipos` WRITE;
-/*!40000 ALTER TABLE `MedallasEquipos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `MedallasEquipos` ENABLE KEYS */;
+LOCK TABLES `MedallaEquipo` WRITE;
+/*!40000 ALTER TABLE `MedallaEquipo` DISABLE KEYS */;
+/*!40000 ALTER TABLE `MedallaEquipo` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `MedallasIndividuales`
+-- Table structure for table `MedallaIndividual`
 --
 
-DROP TABLE IF EXISTS `MedallasIndividuales`;
+DROP TABLE IF EXISTS `MedallaIndividual`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `MedallasIndividuales` (
-  `id_competidor` int(10) unsigned NOT NULL,
+CREATE TABLE `MedallaIndividual` (
+  `id_itf_competidor` int(10) unsigned NOT NULL,
   `id_categoria` smallint(5) unsigned NOT NULL,
   `puesto` tinyint(3) unsigned NOT NULL,
+  PRIMARY KEY (`id_itf_competidor`,`id_categoria`),
   KEY `fk_medallaIndividual_categoria` (`id_categoria`),
-  KEY `fk_MedallasIndividuales_1_idx` (`id_competidor`),
   CONSTRAINT `fk_medallaIndividual_categoria` FOREIGN KEY (`id_categoria`) REFERENCES `CategoriaIndividual` (`id_categoria`),
-  CONSTRAINT `fk_medallasIndividuales_competidor` FOREIGN KEY (`id_competidor`) REFERENCES `Competidor` (`id_itf`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_medallaIndividual_competidor` FOREIGN KEY (`id_itf_competidor`) REFERENCES `Competidor` (`id_itf`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `MedallasIndividuales`
+-- Dumping data for table `MedallaIndividual`
 --
 
-LOCK TABLES `MedallasIndividuales` WRITE;
-/*!40000 ALTER TABLE `MedallasIndividuales` DISABLE KEYS */;
-/*!40000 ALTER TABLE `MedallasIndividuales` ENABLE KEYS */;
+LOCK TABLES `MedallaIndividual` WRITE;
+/*!40000 ALTER TABLE `MedallaIndividual` DISABLE KEYS */;
+/*!40000 ALTER TABLE `MedallaIndividual` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -530,10 +558,9 @@ CREATE TABLE `Participante` (
   `graduacion` varchar(45) NOT NULL,
   `foto` longblob,
   `id_escuela` smallint(5) unsigned DEFAULT NULL,
-  `tipo` varchar(1) DEFAULT NULL,
   PRIMARY KEY (`id_itf`),
-  KEY `id_escuela_idx` (`id_escuela`),
-  CONSTRAINT `fk_participante_escuela` FOREIGN KEY (`id_escuela`) REFERENCES `Escuela` (`id_escuela`) ON DELETE NO ACTION ON UPDATE CASCADE
+  KEY `fk_participante_escuela` (`id_escuela`),
+  CONSTRAINT `fk_participante_escuela` FOREIGN KEY (`id_escuela`) REFERENCES `Escuela` (`id_escuela`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -632,4 +659,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-30 20:25:20
+-- Dump completed on 2017-05-05 10:39:15

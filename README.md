@@ -5,6 +5,10 @@ bd-tp1 1c 2017
 
 ** https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-16-04
 
+### INFORME
+
+** https://docs.google.com/document/d/1WUDnNB1djPS3ea6m_FGljwXjzV1cjkaxWwSXkOtOVaw/edit?usp=sharing
+
 ### DER 
 
 ** https://drive.google.com/file/d/0BzkIgbt1E5IqbTVYSzBnVTVXYjQ/view?usp=sharing
