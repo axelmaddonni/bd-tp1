@@ -76,3 +76,34 @@ BEGIN
 END
 $$
 DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE `esRingCompleto`(
+  id_ring1 SMALLINT(5)
+)
+BEGIN  
+       DECLARE id_nuevo_equipo INT;
+       IF NOT (EXISTS (SELECT null FROM RingConsejoArbitros rca WHERE id_ring1 = rca.id_ring AND rca.id_funcion_arbitraje = 0) AND
+          EXISTS (SELECT null FROM RingConsejoArbitros rca WHERE id_ring1 = rca.id_ring AND rca.id_funcion_arbitraje = 1) AND
+          (SELECT count(*) FROM RingConsejoArbitros rca WHERE id_ring1 = rca.id_ring AND rca.id_funcion_arbitraje = 2) > 1 AND
+          (SELECT count(*) FROM RingConsejoArbitros rca WHERE id_ring1 = rca.id_ring AND rca.id_funcion_arbitraje = 2) >= 3)
+       THEN
+               SIGNAL SQLSTATE '45000'
+                    SET MESSAGE_TEXT = 'El ring es inválido pues el consejo arbitral está incompleto.';
+       END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER graduacion_arbitro_es_suficiente
+     BEFORE INSERT ON RingConsejoArbitros FOR EACH ROW
+     BEGIN
+          IF (SELECT a.graduacion FROM Arbitro a WHERE a.placa = NEW.placa_arbitro) <= (SELECT cfi.graduacion FROM (RingCategoria ra INNER JOIN CategoriaFormasIndividual cfi ON ra.id_categoria = cfi.id_categoria) racfi WHERE NEW.id_ring = racfi.id_ring)
+          THEN
+               SIGNAL SQLSTATE '45000'
+                    SET MESSAGE_TEXT = 'Un árbitro no puede arbitrar una categoría de formas de graduación mayor a la suya.';
+          END IF;
+     END
+$$
+DELIMITER ;
