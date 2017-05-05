@@ -107,3 +107,32 @@ CREATE TRIGGER graduacion_arbitro_es_suficiente
      END
 $$
 DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER `inscripto_satisface_requisitos_categoria` BEFORE INSERT ON `InscripcionesIndividuales` FOR EACH ROW
+BEGIN
+  IF  (SELECT comp.genero FROM Competidor comp WHERE comp.id_itf = NEW.id_competidor) !=
+    (SELECT cat.sexo FROM Categoria cat WHERE cat.id_categoria = NEW.id_categoria)
+  THEN 
+    SIGNAL sqlstate '45000'
+      SET message_text = 'El género del competidor debe coincidir con el de la categoría.';
+  END IF;
+    
+  IF  EXISTS (SELECT null FROM CategoriaCombateIndividual cat WHERE cat.id_categoria = NEW.id_categoria) AND
+    NOT(((SELECT comp.peso FROM Competidor comp WHERE comp.id_itf = NEW.id_competidor) BETWEEN
+    (SELECT cat.pesoMin FROM CategoriaCombateIndividual cat WHERE cat.id_categoria = NEW.id_categoria) AND
+    (SELECT cat.pesoMax FROM CategoriaCombateIndividual cat WHERE cat.id_categoria = NEW.id_categoria)))
+    THEN 
+    SIGNAL sqlstate '45000'
+      SET message_text = 'El peso del competidor debe estar en el rango de la categoría.';
+  END IF;
+    
+  IF  EXISTS (SELECT null FROM CategoriaFormasIndividual cat WHERE cat.id_categoria = NEW.id_categoria) AND
+    (SELECT comp.graduacion FROM Competidor comp WHERE comp.id_itf = NEW.id_competidor) !=
+    (SELECT cat.graduacion FROM CategoriaFormasIndividual cat WHERE cat.id_categoria = NEW.id_categoria)
+    THEN 
+    SIGNAL sqlstate '45000'
+      SET message_text = 'La graduación del competidor debe coincidir con la de la categoría de formas.';
+  END IF;
+END$$
+DELIMITER ;
