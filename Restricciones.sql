@@ -123,8 +123,8 @@ BEGIN
     (SELECT cat.pesoMin FROM CategoriaCombateIndividual cat WHERE cat.id_categoria = NEW.id_categoria) AND
     (SELECT cat.pesoMax FROM CategoriaCombateIndividual cat WHERE cat.id_categoria = NEW.id_categoria)))
     THEN 
-    SIGNAL sqlstate '45000'
-      SET message_text = 'El peso del competidor debe estar en el rango de la categoría.';
+      SIGNAL sqlstate '45000'
+        SET message_text = 'El peso del competidor debe estar en el rango de la categoría.';
   END IF;
     
   IF  EXISTS (SELECT null FROM CategoriaFormasIndividual cat WHERE cat.id_categoria = NEW.id_categoria) AND
@@ -134,5 +134,14 @@ BEGIN
     SIGNAL sqlstate '45000'
       SET message_text = 'La graduación del competidor debe coincidir con la de la categoría de formas.';
   END IF;
+
+  IF  (SELECT DATEDIFF(comp.fecha_nacimiento, '2017-10-01') / 365.25 AS age FROM Competidor comp WHERE comp.id_itf = NEW.id_competidor) BETWEEN 
+      (SELECT comp.edadMin FROM Categoria cat WHERE cat.id_categoria = NEW.id_categoria) AND
+      (SELECT comp.edadMax FROM Categoria cat WHERE cat.id_categoria = NEW.id_categoria)))
+  THEN 
+    SIGNAL sqlstate '45000'
+      SET message_text = 'La edad del competidor debe estar dentro del rango de la categoría.';
+  END IF;
+
 END$$
 DELIMITER ;
