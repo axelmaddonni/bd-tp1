@@ -36,15 +36,15 @@ CREATE TABLE `Participante` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
- -- Coach (itf, nombre, apellido, id_escuela)
+ -- Coach (itf)
 
 CREATE TABLE Coach (id_itf int(10) unsigned NOT NULL PRIMARY KEY);
 ALTER TABLE Coach ADD CONSTRAINT fk_coach_participante
 FOREIGN KEY (id_itf) REFERENCES Participante(id_itf);
 
- -- Competidor (id_itf, dni, nombre, apellido, genero, fecha_nacimiento, peso, graduacion, id_escuela)
+ -- Competidor (id_itf, dni, genero, fecha_nacimiento, peso)
 
-CREATE TABLE Competidor (id_itf int(10) unsigned NOT NULL PRIMARY KEY, dni int2 unsigned NOT NULL, nombre varchar(64) NOT NULL, apellido varchar(64) NOT NULL, genero char(1) NOT NULL, fecha_nacimiento date NOT NULL, peso int1 unsigned NOT NULL);
+CREATE TABLE Competidor (id_itf int(10) unsigned NOT NULL PRIMARY KEY, dni int2 unsigned NOT NULL, genero char(1) NOT NULL, fecha_nacimiento date NOT NULL, peso int1 unsigned NOT NULL);
 ALTER TABLE Competidor ADD CONSTRAINT fk_competidor_participante
 FOREIGN KEY (id_itf) REFERENCES Participante(id_itf);
 
@@ -52,9 +52,9 @@ FOREIGN KEY (id_itf) REFERENCES Participante(id_itf);
 
 CREATE TABLE Equipo (id_equipo int2 unsigned NOT NULL auto_increment PRIMARY KEY, nombre varchar(128) NOT NULL);
 
- -- EquipoCompetidores (id_equipo, id_competidor)
+ -- EquipoCompetidores (id_equipo, id_competidor, funcion)
 
-CREATE TABLE EquipoCompetidores (id_equipo int2 unsigned NOT NULL, id_competidor int(10) unsigned NOT NULL, PRIMARY KEY (id_equipo, id_competidor));
+CREATE TABLE EquipoCompetidores (id_equipo int2 unsigned NOT NULL, id_competidor int(10) unsigned NOT NULL, PRIMARY KEY (id_equipo, id_competidor), nombre varchar(64) NOT NULL);
 
 
 ALTER TABLE EquipoCompetidores ADD CONSTRAINT fk_equipoCompetidor_equipo
@@ -64,17 +64,10 @@ FOREIGN KEY (id_equipo) REFERENCES Equipo(id_equipo);
 ALTER TABLE EquipoCompetidores ADD CONSTRAINT fk_equipoCompetidor_competidor
 FOREIGN KEY (id_competidor) REFERENCES Competidor(id_itf);
 
- -- Modalidad (id_modalidad)
 
-CREATE TABLE Modalidad (id_modalidad int1 unsigned NOT NULL auto_increment PRIMARY KEY);
+ -- Categoria (id_categoria, nombre, sexo, edad, tipo) // tipo = I o E
 
- -- Categoria (id_categoria, sexo, id_modalidad, tipo) // tipo = I o E
-
-CREATE TABLE Categoria (id_categoria int2 unsigned NOT NULL auto_increment PRIMARY KEY, sexo char(1) NOT NULL, id_modalidad int1 unsigned NOT NULL, tipo char(1) NOT NULL);
-
-
-ALTER TABLE Categoria ADD CONSTRAINT fk_categoria_modalidad
-FOREIGN KEY (id_modalidad) REFERENCES Modalidad(id_modalidad);
+CREATE TABLE Categoria (id_categoria int2 unsigned NOT NULL auto_increment PRIMARY KEY, nombre varchar(128) NOT NULL, sexo char(1) NOT NULL,  edad int(10) unsigned NOT NULL, tipo char(1) NOT NULL);
 
  -- CategoriaIndividual (id_categoria, tipo) // tipo in (R, C, F, S)
 
@@ -93,25 +86,25 @@ ALTER TABLE CategoriaPorEquipos ADD CONSTRAINT fk_categoriaPorEquipos_categoria
 FOREIGN KEY (id_categoria) REFERENCES Categoria(id_categoria);
 
  -- CategoriaRoturaPotenciaIndividual (id_categoria) // no hace falta, se deduce del tipo
- -- CategoriaCombateIndividual (id_categoria, peso, edad)
+ -- CategoriaCombateIndividual (id_categoria, peso)
 
-CREATE TABLE CategoriaCombateIndividual (id_categoria int2 unsigned NOT NULL PRIMARY KEY, peso int1 unsigned NOT NULL, edad int1 unsigned NOT NULL);
+CREATE TABLE CategoriaCombateIndividual (id_categoria int2 unsigned NOT NULL PRIMARY KEY, peso int1 unsigned NOT NULL);
 
 
 ALTER TABLE CategoriaCombateIndividual ADD CONSTRAINT fk_categoriaCombateIndividual_categoria
 FOREIGN KEY (id_categoria) REFERENCES CategoriaIndividual(id_categoria);
 
- -- CategoriaFormasIndiviual (id_categoria, edad)
+ -- CategoriaFormasIndiviual (id_categoria, graduacion)
 
-CREATE TABLE CategoriaFormasIndiviual (id_categoria int2 unsigned NOT NULL PRIMARY KEY, edad int1 unsigned NOT NULL);
+CREATE TABLE CategoriaFormasIndiviual (id_categoria int2 unsigned NOT NULL PRIMARY KEY, graduacion int1 unsigned NOT NULL);
 
 
 ALTER TABLE CategoriaFormasIndiviual ADD CONSTRAINT fk_categoriaFormasIndividual_categoria
 FOREIGN KEY (id_categoria) REFERENCES CategoriaIndividual(id_categoria);
 
- -- CategoriaSaltoIndividual (id_categoria, edad)
+ -- CategoriaSaltoIndividual (id_categoria)
 
-CREATE TABLE CategoriaSaltoIndividual (id_categoria int2 unsigned NOT NULL PRIMARY KEY, edad int1 unsigned NOT NULL);
+CREATE TABLE CategoriaSaltoIndividual (id_categoria int2 unsigned NOT NULL PRIMARY KEY);
 
 
 ALTER TABLE CategoriaSaltoIndividual ADD CONSTRAINT fk_categoriaSaltoIndividual_categoria
