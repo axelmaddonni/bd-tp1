@@ -1,0 +1,115 @@
+Cargado de la Base
+
+
+Tablas sin fk
+
+Pais
+Maestro
+Equipo
+Categoria
+Ring
+FuncionArbitraje
+
+
+Tablas con dependencias
+
+Escuela
+	Maestro
+	Pais
+
+Participante
+	Escuela
+
+Coach
+	Participante
+
+Competidor
+	Participante
+
+EquipoCompetidor
+	Competidor
+
+CategoriaIndividual
+	Categoria
+
+CategoriaPorEquipos
+	Categoria
+
+CategoriaCombateIndividual
+CategoriaFormasIndiviual
+CategoriaSaltoIndividual
+	CategoriaIndividual
+
+InscripcionIndividual
+	Competidor
+	CategoriaIndividual
+
+MedallaIndividual
+	InscripcionIndividual
+
+InscripcionEquipo
+	Equipo
+	EquipoCompetidor
+	CategoriaPorEquipo
+
+MedallaEquipo
+	InscripcionEquipo
+
+RingCategoria
+	Ring
+	Categoria
+
+Arbitro
+	Pais
+
+RingConsejoArbitros
+	Ring
+	Arbitro
+	FuncionArbitraje
+	RingCategoria
+
+POSIBLE ORDEN
+
+Pais (AXEL)
+
+LU:
+Maestro
+Escuela
+Participante
+Coach
+Competidor
+
+CAMI: (1ra parte)
+Equipo
+EquipoCompetidor
+
+MANU:
+Categoria
+CategoriaIndividual
+CategoriaPorEquipos
+CategoriaCombateIndividual
+CategoriaFormasIndiviual
+CategoriaSaltoIndividual
+
+AXEL
+SCRIPT (inscribo a todos los que puedan ser inscriptos a cada categoria, y asigno medallas random)
+InscripcionIndividual
+MedallaIndividual
+	Dependen: Competidor y Categorias Individuales
+
+AXEL
+SCRIPT (inscribo a todos los que puedan ser inscriptos a cada categoria, y asigno medallas random)
+InscripcionEquipo
+MedallaEquipo
+	Dependen: Equipo, EquipoCompetidor y CategoriaPorEquipo
+
+CAMI: (2da parte)
+Ring
+Arbitro
+FuncionArbitraje
+
+??? (A MANO PERO SE HACE AL FINAL, NO SE PUEDE HACER EN PARALELO)
+(chequear que los arbitros cumplan las condiciones necesarias en cada ring, y que haya las cantidades necesarias)
+RingCategoria
+RingConsejoArbitros
+	Arbitro, Ring, Categoria
