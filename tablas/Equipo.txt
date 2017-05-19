@@ -1,8 +1,8 @@
-1    Asereje
-2    Karate Kid
-3    Los 5 Mejores
-4    The Beatles
-5    Los Guardianes del Taekwondo
-6    Grupo número 1
-7    Rolling Stones
-8    Los Anonimos
+1	Asereje
+2	Karate Kid
+3	Los 5 Mejores
+4	The Beatles
+5	Los Guardianes del Taekwondo
+6	Grupo número 1
+7	Rolling Stones
+8	Los Anonimos

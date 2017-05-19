@@ -1,4 +1,4 @@
-1    Árbitro Central
-2    Presidente de Mesa
-3    Juez
-4    Suplente
+1	Árbitro Central
+2	Presidente de Mesa
+3	Juez
+4	Suplente
