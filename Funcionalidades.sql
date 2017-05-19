@@ -103,15 +103,24 @@ ORDER BY total;
 
 -- Ranking de puntaje por pais
 
-SELECT pa.nombre, sum(Puntuacion) as total
-FROM MedallasIndividuales m JOIN Participante par ON par.id_itf = m.id_itf_competidor JOIN Escuela e ON par.id_escuela = e.id_escuela JOIN Pais pa ON e.codigo_pais = pa.codigo
-CASE m.puesto
-	WHEN 1 THEN 3
-	WHEN 2 THEN 2
-	ELSE 1
-END as Puntuacion
+SELECT 
+    sum(CASE m.puesto
+        WHEN 1 THEN 3
+        WHEN 2 THEN 2
+        ELSE 1
+    END) as total,
+    pa.nombre
+FROM
+    MedallaIndividual m
+        JOIN
+    Participante par ON par.id_itf = m.id_itf_competidor
+        JOIN
+    Escuela e ON par.id_escuela = e.id_escuela
+        JOIN
+    Pais pa ON e.codigo_pais = pa.codigo
 GROUP BY pa.nombre
 ORDER BY total;
+
 
 -- Lista  de  categorías  donde  haya  participado  y  el  resultado obtenido
 
