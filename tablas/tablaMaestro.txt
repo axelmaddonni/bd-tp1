@@ -1,0 +1,23 @@
+0	Serena 	VanderWoodsen		4	AD
+1	Leighton 	Meester		4	AE
+2	Blair 	Waldorf		1	AF
+3	Penn 	Badgley		4	AG
+4	Daniel 	Humphrey	1	AI
+5	Ed 	Westwick		3	AL
+6	Charles 	BartholomewBass	1	AM
+7	Chace 	Crawford		3	AN
+8	Nathaniel 	Archibald	3	AO
+9	Taylor 	Momsen	2	AQ
+10	Jennifer  	Humphrey	2	AR
+11	Jessica 	Szohr	1	AS
+12	Vanessa 	Abrams	6	AT
+13	Kelly 	Rutherford	3	AU
+14	Lilian 	Wilhelmina Rhodes		4	AW
+15	Matthew 	Settle		4	AZ
+16	Rufus 	Rufus	4	BA
+17	Michelle 	Trachtenberg		5	BB
+18	Georgina 		Sparks		1	BD
+19	Kaylee 		DeFer		5	BE
+20	Charlotte 	Rhodes 	4	BF
+21	Zuzanna 	Szadkowski	2	BG
+22	Dorotea 	Kishlovsky	5	BH

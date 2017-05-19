@@ -1,0 +1,23 @@
+0	Serena 	VanderWoodsen		4	NULL	0	h
+1	Leighton 	Meester		4	NULL	0	p
+2	Blair 	Waldorf		1	NULL	0	p
+3	Penn 	Badgley		4	NULL	0	p
+4	Daniel 	Humphrey	1	NULL	0	p
+5	Ed 	Westwick		3	NULL	1	p
+6	Charles 	BartholomewBass	1	NULL	1	h
+7	Chace 	Crawford		3	NULL	1	p
+8	Nathaniel 	Archibald	3	NULL	1	p
+9	Taylor 	Momsen	2	NULL	1	p
+10	Jennifer  	Humphrey	2	NULL	1	p
+11	Jessica 	Szohr	1	NULL	2	p
+12	Vanessa 	Abrams	6	NULL	2	h
+13	Kelly 	Rutherford	3	NULL	2	p
+14	Lilian 	Wilhelmina Rhodes		4	NULL	2	p
+15	Matthew 	Settle		4	NULL	2	p
+16	Rufus 	Rufus	4	NULL	2	p
+17	Michelle 	Trachtenberg		5	NULL	3	p
+18	Georgina 		Sparks		1	NULL	3	h
+19	Kaylee 		DeFer		5	NULL	3	p
+20	Charlotte 	Rhodes 	4	NULL	3	p
+21	Zuzanna 	Szadkowski	2	NULL	3	p
+22	Dorotea 	Kishlovsky	5	NULL	3	p
