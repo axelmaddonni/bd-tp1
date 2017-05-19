@@ -192,7 +192,8 @@ WHERE
             CategoriaPorEquipos equi ON c.id_categoria = equi.id_categoria
         WHERE
             c.tipo = 'C'))
-        AND f.nombre = 'Central';
+        AND f.nombre = 'Árbitro Central';
+
 
 -- Lista de equipos por país
 

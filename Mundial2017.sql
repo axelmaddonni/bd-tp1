@@ -2,7 +2,7 @@
 --
 -- Host: localhost    Database: Mundial2017
 -- ------------------------------------------------------
--- Server version	5.7.18
+-- Server version	5.7.18-0ubuntu0.16.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -567,6 +567,7 @@ CREATE TABLE `RingCategoria` (
 
 LOCK TABLES `RingCategoria` WRITE;
 /*!40000 ALTER TABLE `RingCategoria` DISABLE KEYS */;
+INSERT INTO `RingCategoria` VALUES (2,1),(3,2),(1,3),(1,4),(1,5),(1,6),(1,7),(1,8),(4,9),(5,10),(2,11),(3,12),(4,13),(1,14),(1,15),(1,16),(1,17),(1,18),(1,19),(5,20),(2,21),(3,22),(4,23),(5,24),(1,25),(1,26),(1,27),(1,28),(1,29),(1,30),(2,31),(3,32),(4,33),(5,34),(2,35),(3,36),(4,37),(5,38),(1,39),(1,40),(1,41),(1,42),(1,43),(1,44),(2,45),(3,46),(4,47),(5,48),(2,49),(1,50),(1,51),(1,52),(1,53),(1,54),(1,55),(3,56),(4,57),(5,58),(2,59),(3,60),(1,61),(1,62),(1,63),(1,64),(1,65),(1,66),(4,67),(5,68),(2,69),(3,70),(4,72),(5,73),(2,74);
 /*!40000 ALTER TABLE `RingCategoria` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -596,6 +597,7 @@ CREATE TABLE `RingConsejoArbitros` (
 
 LOCK TABLES `RingConsejoArbitros` WRITE;
 /*!40000 ALTER TABLE `RingConsejoArbitros` DISABLE KEYS */;
+INSERT INTO `RingConsejoArbitros` VALUES (1,40,1),(2,1,1),(3,9,1),(4,17,1),(5,25,1),(1,39,2),(2,2,2),(3,10,2),(4,18,2),(5,26,2),(1,35,3),(1,38,3),(2,3,3),(2,5,3),(3,11,3),(3,13,3),(4,19,3),(4,21,3),(5,27,3),(5,30,3),(1,28,4),(1,32,4),(1,34,4),(1,37,4),(2,4,4),(2,6,4),(2,7,4),(2,8,4),(3,12,4),(3,14,4),(3,15,4),(3,16,4),(4,20,4),(4,22,4),(4,23,4),(4,24,4),(5,29,4),(5,31,4),(5,33,4),(5,36,4);
 /*!40000 ALTER TABLE `RingConsejoArbitros` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -631,4 +633,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-19 18:30:20
+-- Dump completed on 2017-05-19 19:33:24
