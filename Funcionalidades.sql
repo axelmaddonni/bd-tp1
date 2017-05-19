@@ -92,52 +92,101 @@ ORDER BY cantidad DESC LIMIT 1;
 -- Ranking de puntaje por escuela
 
 SELECT e.nombre, sum(Puntuacion) as total
-FROM (MedallasIndividuales m JOIN Participante par ON par.id_itf = m.id_itf_competidor) as mpar JOIN Escuela e ON mpar.id_escuela = e.id_escuela
+FROM MedallasIndividuales m JOIN Participante par ON par.id_itf = m.id_itf_competidor JOIN Escuela e ON par.id_escuela = e.id_escuela
 CASE m.puesto
 	WHEN 1 THEN 3
 	WHEN 2 THEN 2
 	ELSE 1
 END as Puntuacion
 GROUP BY e.nombre
-ORDER BY total
+ORDER BY total;
 
 -- Ranking de puntaje por pais
 
 SELECT pa.nombre, sum(Puntuacion) as total
-FROM ((MedallasIndividuales m JOIN Participante par ON par.id_itf = m.id_itf_competidor) as mcpar JOIN Escuela e ON mcpar.id_escuela = e.id_escuela) as mce JOIN Pais pa ON mce.codigo_pais = pa.codigo
+FROM MedallasIndividuales m JOIN Participante par ON par.id_itf = m.id_itf_competidor JOIN Escuela e ON par.id_escuela = e.id_escuela JOIN Pais pa ON e.codigo_pais = pa.codigo
 CASE m.puesto
 	WHEN 1 THEN 3
 	WHEN 2 THEN 2
 	ELSE 1
 END as Puntuacion
 GROUP BY pa.nombre
-ORDER BY total
+ORDER BY total;
 
 -- Lista  de  categorías  donde  haya  participado  y  el  resultado obtenido
 
-SELECT p.nombre, cat.nombre, m.puesto
-FROM ((InscripcionesIndividuales i LEFT OUTER JOIN MedallasIndividuales m ON m.id_itf_competidor = i.id_itf_competidor AND m.id_categoria = i.id_categoria) as im JOIN Participante p ON p.id_itf = im.id_itf_competidor) as imc JOIN Categoria cat ON cat.id_categoria = imc.id_categoria
+SELECT 
+    p.nombre, m.puesto
+FROM
+    InscripcionIndividual i
+        LEFT OUTER JOIN
+    MedallaIndividual m ON m.id_itf_competidor = i.id_itf_competidor
+        AND m.id_categoria = i.id_categoria
+        JOIN
+    Participante p ON p.id_itf = m.id_itf_competidor
+        JOIN
+    Categoria cat ON cat.id_categoria = m.id_categoria;
 
 -- Medallero por escuela
 
-SELECT e.nombre, par.nombre, par.apellido, m.puesto, cat.nombre
-FROM ((MedallasIndividuales m JOIN Participante par ON par.id_itf = m.id_itf_competidor) as cmpar JOIN Escuela e ON cmpar.id_escuela = e.id_escuela) as cms JOIN Categoria cat ON cms.id_categoria = cat.id_categoria
-ORDER BY e.nombre
+SELECT 
+    e.nombre, par.nombre, par.apellido, m.puesto
+FROM
+    MedallaIndividual m
+        JOIN
+    Participante par ON par.id_itf = m.id_itf_competidor
+        JOIN
+    Escuela e ON par.id_escuela = e.id_escuela
+        JOIN
+    Categoria cat ON m.id_categoria = cat.id_categoria
+ORDER BY e.nombre;
 
 -- Listado de los árbitros por país
 
-SELECT p.nombre, a.nombre, a.apellido
-FROM Arbitro a JOIN Pais p ON a.codigo_pais = p.codigo
-ORDER BY p.nombre
+SELECT 
+    p.nombre, a.nombre, a.apellido
+FROM
+    Arbitro a
+        JOIN
+    Pais p ON a.codigo_pais = p.codigo
+ORDER BY p.nombre;
 
 -- Lista de todos los árbitros que actuaron como árbitro central en las modalidades de combate
 
-SELECT a.nombre, a.apellido
-FROM ((Arbitro a JOIN RingConsejoArbitros r ON a.placa = r.placa_arbitro) as ar JOIN RingCategoria c ON ar.id_ring = c.id_ring) as arc JOIN FuncionArbitraje f ON f.id_funcion_arbitraje = arc.id_funcion_arbitraje as arcf
-WHERE (c.id_categoria IN CategoriaCombateIndividual OR c.id_categoria IN (SELECT equi.id_categoria FROM Categoria c JOIN CategoriaPorEquipo equi ON c.id_categoria = equi.id_categoria WHERE c.nombre LIKE '%Combate%')) AND f.nombre = 'Central'
+SELECT 
+    a.nombre, a.apellido
+FROM
+    Arbitro a
+        JOIN
+    RingConsejoArbitros r ON a.placa = r.placa_arbitro
+        JOIN
+    RingCategoria c ON r.id_ring = c.id_ring
+        JOIN
+    FuncionArbitraje f ON f.id_funcion_arbitraje = r.id_funcion_arbitraje
+WHERE
+    (c.id_categoria IN (SELECT 
+            id_categoria
+        FROM
+            CategoriaCombateIndividual)
+        OR c.id_categoria IN (SELECT 
+            equi.id_categoria
+        FROM
+            Categoria c
+                JOIN
+            CategoriaPorEquipos equi ON c.id_categoria = equi.id_categoria
+        WHERE
+            c.tipo = 'C'))
+        AND f.nombre = 'Central';
 
 -- Lista de equipos por país
 
-SELECT p.nombre, e.nombre
-FROM (((Equipo e JOIN EquipoCompetidores ec ON e.id_equipo = ec.id_equipo) as eec JOIN Participante par ON par.id_itf = eec.id_itf_competidor) as eeccpar JOIN Escuela es ON es.id_escuela = eeccpar.id_escuela) as eeccesm JOIN Pais p ON p.codigo = eeccesm.codigo_pais
+SELECT 
+    p.nombre, e.nombre
+FROM
+    Equipo e
+    JOIN EquipoCompetidor ec ON e.id_equipo = ec.id_equipo
+    JOIN Participante par ON par.id_itf = ec.id_itf_competidor
+    JOIN Escuela es ON es.id_escuela = par.id_escuela
+        JOIN
+    Pais p ON p.codigo = es.codigo_pais
 ORDER BY p.nombre
