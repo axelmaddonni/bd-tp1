@@ -91,13 +91,20 @@ ORDER BY cantidad DESC LIMIT 1;
 
 -- Ranking de puntaje por escuela
 
-SELECT e.nombre, sum(Puntuacion) as total
-FROM MedallasIndividuales m JOIN Participante par ON par.id_itf = m.id_itf_competidor JOIN Escuela e ON par.id_escuela = e.id_escuela
-CASE m.puesto
-	WHEN 1 THEN 3
-	WHEN 2 THEN 2
-	ELSE 1
-END as Puntuacion
+SELECT 
+    e.nombre,
+    SUM(CASE puesto
+        WHEN 1 THEN 3
+        WHEN 2 THEN 2
+        WHEN 3 THEN 1
+        ELSE NULL
+    END) as total
+FROM
+    MedallaIndividual m
+        JOIN
+    Participante par ON par.id_itf = m.id_itf_competidor
+        JOIN
+    Escuela e ON par.id_escuela = e.id_escuela
 GROUP BY e.nombre
 ORDER BY total;
 
