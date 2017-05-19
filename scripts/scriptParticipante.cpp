@@ -48,11 +48,11 @@ int main(){
 	int vanDeEscuela = 0;
 
 	ifstream nombres;
-	nombres.open("nombresCoachsParticipantes.txt");
+	nombres.open("nombres.txt");
 	if(nombres.is_open()){
 
 		ifstream apellidos;
-		apellidos.open("apellidosCoachsParticipantes.txt");
+		apellidos.open("apellidos.txt");
 		if(apellidos.is_open()){
 
 			ifstream escuelas;
@@ -85,10 +85,15 @@ int main(){
 						} else {
 							if (i == 5){
 								i = -1;
-								k++;
+							} else {
+								if(vanDeEscuela == 20){
+									k++;
+									vanDeEscuela = 0;
+								}
 							}
 						}
 						i++;
+						vanDeEscuela++;
 
 						//idEscuela
 						ouputFile << k;

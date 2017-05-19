@@ -1,23 +1,23 @@
-0	Dojang Teodoro Bertotto	0	
-1	Club Argentino de Wushu, Sede Central	1	
-2	Escuela Argentina de Taekwondo	2	
-3	Escuela Fraternidad de Taekwondo	3	
-4	Taekwon - Do - Sasil - Do - Escuela de Taekwondo	4	
-5	Organizacion Escuela Argentina de Taekwondo Marcial	5	
-6	Escuela de Taekwon-Do Lautaro Gallardo	6	
-7	Taekwondo Instituto Pyong-Ahn	7	
-8	Taekwondo Seng - Do	8	
-9	Taekwondo UGAB	9	
-10	Escuela Integral de Taekwon-Do Marcelo Gonzalez	10	
-11	Club Social y Deportivo 12 de Octubre	11	
-12	Confederación Argentina de Taekwondo WTF	12	
-13	Pitbull Dojo	13	
-14	betsubara dojo	14	
-15	Asociacion Yusan De Taekwon-do ITF (Sede C. A. Parque Patricios)	15	
-16	Gym Hakkyo - Sede J. L. Borges	16	
-17	Escuela de Taekwon-do	17	
-18	Unión Taekwon-do Argentina	18	
-19	BOSS Lanús	19	
-20	Academia ATEIM & ESKBT . KICK BOXING - TAEKWONDO - MUAY THAI	20	
-21	Taekwondo Grupo Aguayo - AITFA Moron	21	
-22	Gym Hakkyo - Sede Av. Santa Fe	22	
+0	Dojang Teodoro Bertotto	0
+1	Club Argentino de Wushu, Sede Central	1
+2	Escuela Argentina de Taekwondo	2
+3	Escuela Fraternidad de Taekwondo	3
+4	Taekwon - Do - Sasil - Do - Escuela de Taekwondo	4
+5	Organizacion Escuela Argentina de Taekwondo Marcial	5
+6	Escuela de Taekwon-Do Lautaro Gallardo	6
+7	Taekwondo Instituto Pyong-Ahn	7
+8	Taekwondo Seng - Do	8
+9	Taekwondo UGAB	9
+10	Escuela Integral de Taekwon-Do Marcelo Gonzalez	10
+11	Club Social y Deportivo 12 de Octubre	11
+12	Confederación Argentina de Taekwondo WTF	12
+13	Pitbull Dojo	13
+14	betsubara dojo	14
+15	Asociacion Yusan De Taekwon-do ITF (Sede C. A. Parque Patricios)	15
+16	Gym Hakkyo - Sede J. L. Borges	16
+17	Escuela de Taekwon-do	17
+18	Unión Taekwon-do Argentina	18
+19	BOSS Lanús	19
+20	Academia ATEIM & ESKBT . KICK BOXING - TAEKWONDO - MUAY THAI	20
+21	Taekwondo Grupo Aguayo - AITFA Moron	21
+22	Gym Hakkyo - Sede Av. Santa Fe	22
